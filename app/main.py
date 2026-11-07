@@ -2,6 +2,7 @@ import datetime as dt
 import os
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Response
+from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -76,6 +77,10 @@ def create_app(database_url: str | None = None, secret_key: str | None = None) -
     @app.get("/health")
     def health() -> dict:
         return {"status": "ok"}
+
+    @app.get("/", include_in_schema=False)
+    def root() -> RedirectResponse:
+        return RedirectResponse(url="/docs")
 
     @app.post("/auth/register", response_model=UserOut, status_code=201)
     def register(body: RegisterIn, db: Session = Depends(get_db)) -> User:

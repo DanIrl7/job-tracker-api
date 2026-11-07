@@ -7,6 +7,12 @@ from app.models import User
 from tests.helpers import application_body, register_and_login
 
 
+def test_root_redirects_to_docs(client):
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code == 307
+    assert response.headers["location"] == "/docs"
+
+
 def test_health(client):
     assert client.get("/health").json() == {"status": "ok"}
 
